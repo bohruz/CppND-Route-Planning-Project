@@ -37,7 +37,18 @@ float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
 // - For each node in current_node.neighbors, add the neighbor to open_list and
 // set the node's visited attribute to true.
 
-void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {}
+void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
+  current_node->FindNeighbors();
+
+  for (auto neighbor : current_node->neighbors) {
+    neighbor->parent = current_node;
+    neighbor->g_value =
+        current_node->g_value + current_node->distance(*neighbor);
+    neighbor->h_value = CalculateHValue(neighbor);
+    open_list.emplace_back(neighbor);
+    neighbor->visited = true;
+  }
+}
 
 // TODO 5: Complete the NextNode method to sort the open list and return the
 // next node. Tips:
@@ -46,7 +57,16 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {}
 // - Remove that node from the open_list.
 // - Return the pointer.
 
-RouteModel::Node *RoutePlanner::NextNode() {}
+RouteModel::Node *RoutePlanner::NextNode() {
+  std::sort(open_list.begin(), open_list.end(), [](const auto a, const auto b) {
+    return (a->h_value + a->g_value) > (b->h_value + b->g_value);
+  });
+
+  RouteModel::Node *lowestSum = open_list.back();
+  open_list.pop_back();
+
+  return lowestSum;
+}
 
 // TODO 6: Complete the ConstructFinalPath method to return the final path found
 // from your A* search. Tips:
@@ -66,9 +86,17 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(
   std::vector<RouteModel::Node> path_found;
 
   // TODO: Implement your solution here.
-
+  while (current_node->parent != nullptr) {
+    path_found.emplace_back(*current_node);
+    const RouteModel::Node parent = *(current_node->parent);
+    distance += current_node->distance(parent);
+    current_node = current_node->parent;
+  }
+  path_found.emplace_back(*current_node);
   distance *= m_Model.MetricScale();  // Multiply the distance by the scale of
                                       // the map to get meters.
+
+  std::reverse(path_found.begin(), path_found.end());
   return path_found;
 }
 
