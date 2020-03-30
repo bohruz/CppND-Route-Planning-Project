@@ -57,15 +57,15 @@ int main(int argc, const char** argv) {
   std::cout << "Hello, let's find your path? \n";
 
   // start variables
-  float start_x = 0, start_y = 0;
+  float start_x{10}, start_y{10};
 
   // end variables
-  float end_x = 0, end_y = 0;
+  float end_x{90}, end_y{90};
 
   // message to help the user
-  std::cout << "Your start point is x = 10 and y = 10 and your end point is x "
-               "= 90 and y = 90. \n"
-            << "Please write these coordinates in the console.\n";
+  std::cout << "Default points - start (10, 10), end (90, 90)\n"
+            << "Please write the desire coordinates in the console.\n"
+            << "Points in range of 0 - 90\n";
 
   // asking for the start point
   std::cout << "Start: ";
