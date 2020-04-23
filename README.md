@@ -2,6 +2,8 @@
 
 <img src="map.png" width="600" height="450" />
 
+In this project I developed a route plannig using modern C++ that plots a path between two points on a map using real map data from the OpenStreeMap project with the A* search algorithm.
+
 ## Cloning
 
 When cloning this project, be sure to use the `--recurse-submodules` flag. Using HTTPS:
